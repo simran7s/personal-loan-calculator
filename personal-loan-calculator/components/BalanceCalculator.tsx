@@ -13,8 +13,8 @@ import { LoanEntryDetails } from './LoanEntryDetails'
 
 interface BalanceCalculatorProps {
   entries: LoanEntry[]
-  calculatedEntries: LoanEntry[]
-  setCalculatedEntries: (entries: LoanEntry[]) => void
+  calculatedEntries: CalculationEntry[]
+  setCalculatedEntries: React.Dispatch<React.SetStateAction<CalculationEntry[]>>
 }
 
 type CompoundFrequency = 'daily' | 'weekly' | 'monthly' | 'yearly'
@@ -28,21 +28,9 @@ const getCompoundsPerYear = (frequency: CompoundFrequency): number => {
   }
 }
 
-interface CalculationEntry extends LoanEntry {
+export interface CalculationEntry extends LoanEntry {
   balanceDateAmount: number
   isExpanded: boolean
-}
-
-const isLeapYearIncluded = (startDate: Date, endDate: Date): boolean => {
-  for (let year = startDate.getFullYear(); year <= endDate.getFullYear(); year++) {
-    if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
-      const leapDay = new Date(year, 1, 29); // February 29th
-      if (leapDay >= startDate && leapDay <= endDate) {
-        return true;
-      }
-    }
-  }
-  return false;
 }
 
 const getDaysDifference = (startDate: Date, endDate: Date) => {
@@ -94,9 +82,6 @@ export default function BalanceCalculator({ entries, calculatedEntries, setCalcu
         totalPaid += balanceDateAmount
       }
 
-      const effectiveAnnualRate = (Math.pow(1 + rate / compoundsPerYear, compoundsPerYear) - 1) * 100
-
-
       newCalculations.push({
         ...entry,
         balanceDateAmount,
@@ -110,17 +95,17 @@ export default function BalanceCalculator({ entries, calculatedEntries, setCalcu
 
 
   const toggleExpand = (index: number) => {
-    setCalculatedEntries(prev => 
+    setCalculatedEntries((prev: CalculationEntry[]) => 
       prev.map((entry, i) => 
         i === index ? { ...entry, isExpanded: !entry.isExpanded } : entry
-      ) as CalculationEntry[]
+      )
     )
   }
 
   const toggleExpandAll = () => {
     setIsAllExpanded(!isAllExpanded)
-    setCalculatedEntries(prev => 
-      prev.map(entry => ({ ...entry, isExpanded: !isAllExpanded })) as CalculationEntry[]
+    setCalculatedEntries((prev: CalculationEntry[]) => 
+      prev.map(entry => ({ ...entry, isExpanded: !isAllExpanded }))
     )
   }
 

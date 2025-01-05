@@ -4,12 +4,12 @@ import { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import LoanEntryForm from '@/components/LoanEntryForm'
 import LoanEntryList from '@/components/LoanEntryList'
-import BalanceCalculator from '@/components/BalanceCalculator'
+import BalanceCalculator, { CalculationEntry } from '@/components/BalanceCalculator'
 import { LoanEntry } from '@/types/loan'
 
 export default function LoanCalculator() {
   const [entries, setEntries] = useState<LoanEntry[]>([])
-  const [calculatedEntries, setCalculatedEntries] = useState<LoanEntry[]>([])
+  const [calculatedEntries, setCalculatedEntries] = useState<CalculationEntry[]>([])
 
   const addEntry = (entry: LoanEntry) => {
     setEntries([...entries, entry])
@@ -24,10 +24,6 @@ export default function LoanCalculator() {
   const editEntry = (id: number, updatedEntry: LoanEntry) => {
     setEntries(entries.map(entry => entry.id === id ? updatedEntry : entry))
     setCalculatedEntries([]) // Clear calculated entries
-  }
-
-  const setCalculatedBalance = (calculatedEntries: LoanEntry[]) => {
-    setCalculatedEntries(calculatedEntries)
   }
 
   return (
@@ -52,7 +48,7 @@ export default function LoanCalculator() {
           <BalanceCalculator 
             entries={entries} 
             calculatedEntries={calculatedEntries}
-            setCalculatedEntries={setCalculatedBalance}
+            setCalculatedEntries={setCalculatedEntries}
           />
         </CardContent>
       </Card>

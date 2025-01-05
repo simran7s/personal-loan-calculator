@@ -15,6 +15,7 @@ interface LoanEntryFormProps {
 }
 
 export default function LoanEntryForm({ onAddEntry }: LoanEntryFormProps) {
+  const today = new Date().toISOString().split('T')[0]
   const [date, setDate] = useState('')
   const [amount, setAmount] = useState('')
   const [type, setType] = useState<'borrowed' | 'paid'>('borrowed')
@@ -58,6 +59,7 @@ export default function LoanEntryForm({ onAddEntry }: LoanEntryFormProps) {
           id="date"
           type="date"
           value={date}
+          max={today}
           onChange={(e) => setDate(e.target.value)}
           required
           className="mt-1"
